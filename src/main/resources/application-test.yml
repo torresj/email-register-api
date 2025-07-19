@@ -1,0 +1,12 @@
+#Loggin
+logging:
+  config: classpath:logback-spring-test.xml
+
+#Credentials
+api:
+  admin:
+    name: admin
+    password: test
+  user:
+    name: user
+    password: test
