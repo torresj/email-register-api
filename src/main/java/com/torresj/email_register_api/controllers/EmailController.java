@@ -5,6 +5,7 @@ import com.torresj.email_register_api.exceptions.EmailAlreadyExistException;
 import com.torresj.email_register_api.exceptions.InvalidEmailException;
 import com.torresj.email_register_api.servicies.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,7 +57,12 @@ public class EmailController {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "ok"
+                            description = "ok",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            array = @ArraySchema(schema = @Schema(implementation = String.class)))
+                            }
                     ),
             })
     @GetMapping()
