@@ -31,6 +31,14 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    public void remove(String email) throws InvalidEmailException {
+        log.info("Removing email {}", email);
+        emailValidationService.validateEmail(email);
+        var optionalEmail = emailRepository.findByEmail(email);
+        optionalEmail.ifPresent(emailRepository::delete);
+    }
+
+    @Override
     public List<String> getEmails() {
         log.info("Getting emails");
         return emailRepository.findAll().stream().map(EmailEntity::getEmail).toList();

@@ -1,5 +1,6 @@
 package com.torresj.email_register_api.controllers;
 
+import com.torresj.email_register_api.dtos.DeleteRequestDto;
 import com.torresj.email_register_api.dtos.RegisterRequestDto;
 import com.torresj.email_register_api.exceptions.EmailAlreadyExistException;
 import com.torresj.email_register_api.exceptions.InvalidEmailException;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,5 +72,26 @@ public class EmailController {
     public ResponseEntity<List<String>> getEmails() {
         var emails = emailService.getEmails();
         return ResponseEntity.ok(emails);
+    }
+
+    @Operation(summary = "Delete email", security = @SecurityRequirement(name = "basicScheme"))
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Deleted"
+                    ),
+            })
+    @DeleteMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> remove(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Email to be deleted",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = DeleteRequestDto.class)))
+            @RequestBody DeleteRequestDto request
+    ) throws InvalidEmailException {
+        emailService.remove(request.getEmail());
+        return ResponseEntity.ok("Deleted");
     }
 }
