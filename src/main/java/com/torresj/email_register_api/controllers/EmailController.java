@@ -51,7 +51,7 @@ public class EmailController {
             @RequestBody RegisterRequestDto request
     ) throws InvalidEmailException, EmailAlreadyExistException {
         emailService.register(request.getEmail());
-        return ResponseEntity.ok("Registered");
+        return ResponseEntity.ok("{\"status\":\"Registered\"}");
     }
 
     @Operation(summary = "Get registered emails", security = @SecurityRequirement(name = "basicScheme"))
@@ -92,6 +92,6 @@ public class EmailController {
             @RequestBody DeleteRequestDto request
     ) throws InvalidEmailException {
         emailService.remove(request.getEmail());
-        return ResponseEntity.ok("Deleted");
+        return ResponseEntity.ok("{\"status\":\"Deleted\"}");
     }
 }
