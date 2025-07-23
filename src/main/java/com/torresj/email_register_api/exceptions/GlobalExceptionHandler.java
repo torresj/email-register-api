@@ -18,13 +18,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(e.toString());
         return problemDetail;
     }
-
-    @ExceptionHandler(EmailAlreadyExistException.class)
-    ProblemDetail handleEmailAlreadyExist(EmailAlreadyExistException e) {
-        ProblemDetail problemDetail =
-                ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setTitle(e.getMessage());
-        log.error(e.toString());
-        return problemDetail;
-    }
 }

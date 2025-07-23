@@ -1,7 +1,6 @@
 package com.torresj.email_register_api.servicies.impl;
 
 import com.torresj.email_register_api.entities.EmailEntity;
-import com.torresj.email_register_api.exceptions.EmailAlreadyExistException;
 import com.torresj.email_register_api.exceptions.InvalidEmailException;
 import com.torresj.email_register_api.repositories.EmailRepository;
 import com.torresj.email_register_api.servicies.EmailService;
@@ -20,14 +19,13 @@ public class EmailServiceImpl implements EmailService {
     private final EmailValidationService emailValidationService;
 
     @Override
-    public void register(String email) throws InvalidEmailException, EmailAlreadyExistException {
+    public void register(String email) throws InvalidEmailException {
         log.info("Registering email {}", email);
         emailValidationService.validateEmail(email);
         var optionalEmail = emailRepository.findByEmail(email);
-        if (optionalEmail.isPresent()) {
-            throw new EmailAlreadyExistException(email);
+        if (optionalEmail.isEmpty()) {
+            emailRepository.save(new EmailEntity(email));
         }
-        emailRepository.save(new EmailEntity(email));
     }
 
     @Override

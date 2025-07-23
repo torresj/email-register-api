@@ -2,7 +2,6 @@ package com.torresj.email_register_api.controllers;
 
 import com.torresj.email_register_api.dtos.DeleteRequestDto;
 import com.torresj.email_register_api.dtos.RegisterRequestDto;
-import com.torresj.email_register_api.exceptions.EmailAlreadyExistException;
 import com.torresj.email_register_api.exceptions.InvalidEmailException;
 import com.torresj.email_register_api.servicies.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +48,7 @@ public class EmailController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = RegisterRequestDto.class)))
             @RequestBody RegisterRequestDto request
-    ) throws InvalidEmailException, EmailAlreadyExistException {
+    ) throws InvalidEmailException {
         emailService.register(request.getEmail());
         return ResponseEntity.ok("{\"status\":\"Registered\"}");
     }
