@@ -24,7 +24,7 @@ api:
     name: ${ADMIN_NAME}
     password: ${ADMIN_PASSWORD}
   user:
-    name: ${USER_PASSWORD}
+    name: ${USER_NAME}
     password: ${USER_PASSWORD}
 
 management:
