@@ -13,6 +13,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -71,6 +76,35 @@ public class EmailController {
     public ResponseEntity<List<String>> getEmails() {
         var emails = emailService.getEmails();
         return ResponseEntity.ok(emails);
+    }
+
+    @Operation(summary = "Get registered emails in a file", security = @SecurityRequirement(name = "basicScheme"))
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "ok",
+                            content = {
+                                @Content(
+                                        mediaType = "text/plain",
+                                        schema = @Schema(implementation = Resource.class)
+                                )
+                            }
+                    ),
+            })
+    @GetMapping("/export")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Resource> getEmailsInFile() {
+        var emails = emailService.getEmails();
+        String content = String.join(", ", emails);
+
+        ByteArrayResource resource = new ByteArrayResource(content.getBytes(StandardCharsets.UTF_8));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"emails.txt\"")
+                .contentType(MediaType.TEXT_PLAIN)
+                .contentLength(resource.contentLength())
+                .body(resource);
     }
 
     @Operation(summary = "Delete email", security = @SecurityRequirement(name = "basicScheme"))
